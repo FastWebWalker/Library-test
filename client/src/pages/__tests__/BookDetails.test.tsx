@@ -1,15 +1,15 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import BookDetails from '../BookDetails';
-import React from 'react';
 
 // Mock react-router's useParams to return a fixed id
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('react-router-dom')>();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
   return {
     ...actual,
     useParams: () => ({ id: '42' }),
     Link: (props: any) => <a {...props} />, // minimal stub for Link used in Button
-  } as typeof actual;
+  };
 });
 
 // Mock BooksApi.get to return a fake book
@@ -43,4 +43,3 @@ describe('BookDetails', () => {
     expect(screen.getByRole('button', { name: /back/i })).toBeInTheDocument();
   });
 });
-
