@@ -1,15 +1,17 @@
 # Base image
-FROM node:20-alpine
+FROM node:20-bullseye-slim
 
 # Create app directory
 WORKDIR /app
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies first
 COPY package*.json ./
-RUN npm ci --omit=dev || npm ci
+RUN npm install --no-audit --no-fund
 
 # Copy source
 COPY . .
+RUN npx prisma generate && npm run build
 
 # Environment
 ENV NODE_ENV=production
@@ -17,4 +19,4 @@ ENV PORT=5000
 EXPOSE 5000
 
 # Start command: try dist first, then common fallbacks
-CMD ["sh", "-c", "node dist/server.js || node dist/index.js || node src/server.js || node src/index.js || node index.js"]
+CMD ["sh", "-c", "npm run prisma:migrate && node dist/index.js"]
