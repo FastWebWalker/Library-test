@@ -48,6 +48,8 @@ services:
 
   client:
     build: ./client
+    environment:
+      - API_URL=http://server:5000
     depends_on:
       - server
     ports:
