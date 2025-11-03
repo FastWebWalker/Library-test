@@ -19,4 +19,4 @@ ENV PORT=5000
 EXPOSE 5000
 
 # Start command: try dist first, then common fallbacks
-CMD ["sh", "-c", "npm run prisma:migrate && node dist/index.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy || npx prisma db push; node dist/index.js"]
