@@ -5,6 +5,8 @@ import {
   Typography,
   Button,
   CssBaseline,
+  IconButton,
+  Badge,
 } from "@mui/material";
 import {
   createTheme,
@@ -14,6 +16,7 @@ import {
 import Home from "./pages/Home";
 import Library from "./pages/Library";
 import BookDetails from "./pages/BookDetails";
+import { BadgesDialog, useAchievements, BadgeToasts } from "./achievements";
 
 export default function App() {
   let theme = createTheme({
@@ -35,6 +38,7 @@ export default function App() {
             <Button color="inherit" component={Link} to="/library">
               Library
             </Button>
+            <BadgesButton />
           </Toolbar>
         </AppBar>
         <Routes>
@@ -42,7 +46,21 @@ export default function App() {
           <Route path="/library" element={<Library />} />
           <Route path="/book/:id" element={<BookDetails />} />
         </Routes>
+        <BadgesDialog />
+        <BadgeToasts />
       </BrowserRouter>
     </ThemeProvider>
+  );
+}
+
+function BadgesButton() {
+  const earned = useAchievements((s) => s.earned);
+  const setOpen = useAchievements((s) => s.setDialog);
+  return (
+    <IconButton color="inherit" onClick={() => setOpen(true)} aria-label="badges">
+      <Badge badgeContent={earned.length} color="secondary">
+        <span role="img" aria-label="medal">🏅</span>
+      </Badge>
+    </IconButton>
   );
 }

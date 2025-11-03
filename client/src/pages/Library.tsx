@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { useBooksStore } from "../store";
 import BookForm from "../components/BookForm";
 import type { Book } from "../api";
+import { useAchievements } from "../achievements";
 
 export default function Library() {
   const {
@@ -37,9 +38,11 @@ export default function Library() {
 
   const handleCreate = async (data: any) => {
     await createBook(data);
+    useAchievements.getState().bumpAddCount();
   };
   const handleUpdate = async (data: any) => {
     if (edit) await updateBook(edit.id, data);
+    useAchievements.getState().award("first_edit");
   };
 
   return (
@@ -163,7 +166,7 @@ export default function Library() {
                   <Button
                     color="error"
                     size="small"
-                    onClick={() => deleteBook(b.id)}
+                    onClick={() => { deleteBook(b.id); useAchievements.getState().award("first_delete"); }}
                     sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
                     Delete
                   </Button>
